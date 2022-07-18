@@ -1,0 +1,10 @@
+schema
+  @sdl(
+    files: [
+      "mysql-01/index.graphql"
+      "mysql-02/index.graphql"
+      "mysql/index.graphql"
+    ]
+  ) {
+  query: Query
+}

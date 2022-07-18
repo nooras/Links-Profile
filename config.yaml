@@ -1,0 +1,4 @@
+configurationset:
+  - configuration:
+      name: mysql_config
+      dsn: pvxl23ngk4z2:pscale_pw_YO2pbJkrToGJ8gmjMWheFOa9oExcBQK1uqklC7-lRDk@tcp(2s367gc1imgv.us-east-3.psdb.cloud)/link-profile?tls=true
