@@ -2,6 +2,7 @@ type Links {
   id: Int!
   link: String!
   linkName: String!
+  userId: Int!
 }
 
 type Query {
@@ -30,6 +31,15 @@ type Query {
       """
       configuration: "mysql_config"
     )
+
+  getLinksByUserId(userId: Int!): [Links]
+    @dbquery(
+      type: "mysql"
+      query: """
+      select * from `links` where `userId` = ?
+      """
+      configuration: "mysql_config"
+    )
   """
   In this example, two query parameters are passed. If the request to the DB will
   return at most one value you can remove the square brackets from the result.
@@ -48,7 +58,7 @@ type Mutation {
   """
   In this mutation example you can see how to do a mutation to insert data in the database.
   """
-  insertLinks(link: String!, linkName: String!): Links
+  insertLinks(link: String!, linkName: String!, userId:  String!): Links
     @dbquery(
       type: "mysql"
       table: "links"

@@ -38,6 +38,27 @@ const INSERT_USER_DETAILS = gql`
 }
 `
 
+const INSERT_LINK_DETAILS = gql`
+    mutation MyMutation($link: String!, $linkName: String!, $userId: String!) {
+      insertLinks(link: $link, linkName: $linkName, userId: $userId) {
+        id
+        link
+        linkName
+        userId
+      }
+}
+`
+const GET_LINKS_BY_USERID = gql`
+  query MyQuery($userId: Int!)   {
+    getLinksByUserId(userId: $userId) {
+      id
+      link
+      linkName
+      userId
+    }
+  }
+`;
+
 function getModalStyle(){
   const top = 50;
   const left = 50;
@@ -73,11 +94,15 @@ function LinksProfile(name) {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = useState(false);
   const [openSignIn, setOpenSignIn] = useState(false);
+  const [openAddLink, setOpenAddLink] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [id, setId] = useState('');
+  const [userId, setUserId] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState("");
+  const [linkName, setLinkName] = useState('');
+  const [link, setLink] = useState('');
+  const [linkDetails, setLinkDetails] = useState('');
     // console.log("hii", name["name"]);
 
   const signIn = async (event) => {
@@ -104,9 +129,10 @@ function LinksProfile(name) {
     if(res[0] !== undefined){
         console.log("YESS")
         setEmail(res[0].email);
-        setId(res[0].userId);
+        setUserId(res[0].userId);
         console.log(res[0].email, res[0].userId);
         setOpenSignIn(false);
+        fetchLinkDetails();
     } else {
         setError("User Not Found")
         console.log("No")
@@ -135,7 +161,7 @@ function LinksProfile(name) {
     if(res.userId !== undefined){
         console.log("YESS")
         // setEmail(res[0].email);
-        setId(res.userId);
+        setUserId(res.userId);
         console.log(res.email, res.userId)
         setOpen(false);
     } else {
@@ -150,8 +176,68 @@ function LinksProfile(name) {
   }
 
   // if(id){
-    console.log(id);
+    console.log(userId);
   // }
+
+  const addLink = async (event) =>{
+    event.preventDefault();
+    console.log("addLink");
+
+    const { loading, error, data } = await client.mutate({
+      mutation: INSERT_LINK_DETAILS, 
+      variables: { link: link, linkName: linkName, userId: userId}
+    });
+
+    if (loading) (console.log("loading"));
+  
+    if (error)  {
+      console.log(error);
+      setError("Something went wrong...");   
+      // <pre>{JSON.stringify(error, null, 2)}</pre>
+    };
+      
+    const res = data["insertUsers"];
+  
+    console.log(res);
+    if(res.id !== undefined){
+        console.log("Link added...")
+        // setEmail(res[0].email);
+        // setId(res.);
+        fetchLinkDetails();
+        console.log(res.id, res.link)
+        setOpenAddLink(false);
+    } else {
+        setError("Try again after sometimes. Add link fail.")
+        console.log("Link not added");
+    }
+  }
+
+  const fetchLinkDetails = async () => {
+    // event.preventDefault();
+    const userId = 1;
+    const { loading, error, data } = await client.query({
+      query: GET_LINKS_BY_USERID, 
+      variables: { userId: userId}
+    });
+  
+    if (loading) (console.log("loading"));
+  
+    if (error)  {
+      console.log(error);
+      setError("Something went wrong");   
+      // <pre>{JSON.stringify(error, null, 2)}</pre>
+    };
+      
+    const res = data["getLinksByUserId"];
+    if(res[0].id !== undefined){
+      console.log("Links loaded...")
+      setLinkDetails(res);
+      console.log(res)
+  } else {
+      setError("Link loading fail.")
+      console.log("Link not loaded...");
+  }
+  }
   
 
   return (
@@ -226,20 +312,79 @@ function LinksProfile(name) {
           </form>
         </div>
       </Modal>
+
+      <Modal
+        open={openAddLink}
+        onClose={() => setOpenAddLink(false)}
+      >
+         <div style={modalStyle} className={classes.paper}>
+          <form className="app_signin" >
+              <center>
+                Add Link
+                {/* <img className="logoImage" 
+                  src={Logo}
+                  alt="logo_image" width={300}>
+                </img> */}
+              </center>
+              <Input
+                placeholder="Link Name" 
+                type="text"
+                value={linkName}
+                onChange={(e) => setLinkName(e.target.value)}
+              />
+              <Input
+                placeholder="Link URL" 
+                type="text"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+              />
+              <Button className='mx-2' type="submit" onClick={addLink} style={{border: '3px solid rgb(205, 213, 248)'}}>Add</Button>
+              <div>
+                {/* {error && (<p>{error}</p>)} */}
+              </div>
+          </form>
+        </div>
+      </Modal>
+
       <div className="loginContainer">
-            {id ? (
+            {userId ? (
               <div>
                 <p>{email}</p>
                 <Button className="btn" onClick={() => signOut()} style={{border: '3px solid rgb(205, 213, 248)'}}>Logout</Button>
               </div>
               ):(
               <div>
-                <p>{email} {id}</p>
+                <p>{email} {userId}</p>
                 <Button className="btn mx-2" onClick={() => setOpenSignIn(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign In</Button>
                 <Button className="btn" onClick={() => setOpen(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign Up</Button>
               </div>
             )}    
       </div>
+      {userId && (
+        <div>
+          <Button className="btn" onClick={() => setOpenAddLink(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>ADD LINK</Button>
+        </div>
+      )}
+
+      {linkDetails && 
+      <div>
+        {/* {linkDetails[0].linkName} */}
+        {Object.keys(linkDetails).map((key) => (
+          <p key={key}>
+            {linkDetails[key].linkName}
+            {linkDetails[key].link}
+          </p>
+        ))}
+        {/* {
+                  linkDetails.map((e, i) => {
+                    <div>
+                      hii
+                      {i} {e.link}
+                    </div>
+                  })
+        } */}
+      </div>}
+      
     </div>
   );
 }
