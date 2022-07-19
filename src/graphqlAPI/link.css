@@ -1,0 +1,26 @@
+.linkdiv{
+    border: #0097EF solid 1px;
+    width: 40rem;
+    border-radius: 2em;
+    text-align: left;
+    box-shadow: 0 5px 10px rgba(24, 15, 15, 0.2);
+  }
+
+.card-header:first-child{
+    border-top-left-radius: 2em;
+    border-top-right-radius: 2em;
+}
+
+.card-header{
+    border-bottom: #0097EF solid 1px;
+    background-color: #e2eff7;
+    
+}
+
+.button-all{
+    border: #0097EF solid 1px;
+}
+
+.social-logo{
+    width: auto;
+}

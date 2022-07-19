@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { gql } from "graphql-tag"
 // import { useQuery } from "@apollo/react-hooks"
 
-
+//sample
 const GET_QUERY = gql`
   query MyQuery   {
     getUsersList {

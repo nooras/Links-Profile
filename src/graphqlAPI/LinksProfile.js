@@ -7,6 +7,10 @@ import { Button, Input, TextareaAutosize } from '@material-ui/core';
 import { client } from '../utils/client'
 // import Logo from "./assets/img/foodies.gif"
 import { useParams } from 'react-router-dom'
+import './link.css';
+import logo from './../assets/img/logo.gif';
+import SocialMedia from './../assets/img/SocialMedia.png'
+
 
 
 // var name = "nooras";
@@ -285,8 +289,8 @@ function LinksProfile() {
     setCopyText("");
   }
 
-  const myFunction = (value) =>  {
-    console.log(value)
+  // const myFunction = (value) =>  {
+  //   console.log(value)
     /* Get the text field */
     // var copyText = document.getElementById("myInput");
   
@@ -295,11 +299,11 @@ function LinksProfile() {
     // copyText.setSelectionRange(0, 99999); /* For mobile devices */
   
      /* Copy the text inside the text field */
-    navigator.clipboard.writeText(value);
+    // navigator.clipboard.writeText(value);
   
     /* Alert the copied text */
     // alert("Copied the text: " + value);
-  }
+  // }
 
   return (
     <div className=''>
@@ -310,10 +314,10 @@ function LinksProfile() {
          <div style={modalStyle} className={classes.paper}>
           <form className="app_signup">
               <center> 
-                Sign in
-                {/* <img className="logoImage" 
-                  src={Logo}
-                  alt="logo_image" width={300}></img> */}
+                {/* Sign in */}
+                <img className="logoImage" 
+                  src={logo}
+                  alt="logo_image" width={200}></img>
               </center>
               <Input
                 placeholder="Username" 
@@ -333,7 +337,8 @@ function LinksProfile() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button className='mx-2' type="submit" onClick={signUp} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign up</Button>
+              <Button className="btn mx-2" type="submit" onClick={signUp} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7'}}>Sign In</Button>
+              {/* <Button className='mx-2' type="submit" onClick={signUp} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign up</Button> */}
               <div>
                 {error && (<p>{error}</p>)}
               </div>
@@ -348,11 +353,11 @@ function LinksProfile() {
          <div style={modalStyle} className={classes.paper}>
           <form className="app_signin" >
               <center>
-                Sign up
-                {/* <img className="logoImage" 
-                  src={Logo}
-                  alt="logo_image" width={300}>
-                </img> */}
+                {/* Sign up */}
+                <img className="logoImage" 
+                  src={logo}
+                  alt="logo_image" width={200}>
+                </img>
               </center>
               <Input
                 placeholder="username" 
@@ -366,7 +371,8 @@ function LinksProfile() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button className='mx-2' type="submit" onClick={signIn} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign In</Button>
+              <Button className="btn mx-2" type="submit" onClick={signIn} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7'}}>Sign In</Button>
+              {/* <Button className='mx-2' type="submit" aria-autocomplete='off' class='btn-group' onClick={signIn} style={{border: '3px solid rgb(205, 213, 248) ' }}>Sign In</Button> */}
               <div>
                 {error && (<p>{error}</p>)}
               </div>
@@ -382,10 +388,6 @@ function LinksProfile() {
           <form className="app_signin" >
               <center>
                 Add Link
-                {/* <img className="logoImage" 
-                  src={Logo}
-                  alt="logo_image" width={300}>
-                </img> */}
               </center>
               <Input
                 placeholder="Link Name" 
@@ -407,41 +409,25 @@ function LinksProfile() {
         </div>
       </Modal>
 
-      <div className="loginContainer">
+      <div className="loginContainer d-flex justify-content-between m-4">
+              <div>
+                <img src={logo} className="App-logo" width='200' alt="logo"></img>
+              </div>
             {userId ? (
               <div>
-                <p>{email}</p>
-                <Button className="btn" onClick={() => signOut()} style={{border: '3px solid rgb(205, 213, 248)'}}>Logout</Button>
+                {/* <p>{email}</p> */}
+                <Button className="btn mx-2" onClick={() => setOpenAddLink(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>ADD LINK</Button>
+                <Button className="btn" onClick={() => signOut()} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>Logout</Button>
               </div>
               ):(
               <div>
-                <p>{email} {userId}</p>
-                <Button className="btn mx-2" onClick={() => setOpenSignIn(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign In</Button>
-                <Button className="btn" onClick={() => setOpen(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign Up</Button>
+                {/* <p>{email} {userId}</p> */}
+                <Button className="btn mx-2" onClick={() => setOpenSignIn(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>Sign In</Button>
+                <Button className="btn" onClick={() => setOpen(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}} >Sign Up</Button>
               </div>
             )}    
       </div>
-      {userId && (
-        <div>
-          <Button className="btn" onClick={() => setOpenAddLink(true)} style={{border: '3px solid rgb(205, 213, 248)'}}>ADD LINK</Button>
-        </div>
-      )}
-
-      {linkDetails && 
-      <div>
-        {/* {linkDetails[0].linkName} */}
-        
-        {/* {
-                  linkDetails.map((e, i) => {
-                    <div>
-                      hii
-                      {i} {e.link}
-                    </div>
-                  })
-        } */}
-      </div>}
-      {userUniqeName}
-      {msg}
+      {/* {msg} */}
       
         {Object.keys(linkDetails).map((key) => (
           // <p key={key}>
@@ -449,22 +435,28 @@ function LinksProfile() {
           //   {linkDetails[key].link}
           // </p>
           <div className='d-flex justify-content-center m-2'>
-            <div className="linkdiv card border-secondary" key={key}>
-              <div className="card-header">
-                <h4>{linkDetails[key].linkName}</h4>
+            <div className="linkdiv card" key={key}>
+              <div className="card-header text-uppercase">
+                <h4 className='m-2'>{linkDetails[key].linkName}</h4>
               </div>
               <div className="d-flex card-body text-secondary justify-content-between">
-                <h6 className="card-text my-2">{linkDetails[key].link}</h6>
-                <Button className='mx-2' onClick={() => setCopyText(linkDetails[key].link)} style={{border: '3px solid rgb(205, 213, 248)'}}>Copy text</Button>
-                {/* <button onClick={() => setCopyText(linkDetails[key].link)} value={linkDetails[key].link}>Copy text</button> */}
-                {/* <button onClick={() => this.myFunction(linkDetails[key].link)}>Copy text</button> */}
-                {/* <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
+                <h4 className="card-text m-2">{linkDetails[key].link}</h4>
+                <Button className='button-all' onClick={() => setCopyText(linkDetails[key].link)}><img src="https://img.icons8.com/ios-glyphs/20/000000/copy.png"/></Button>
               </div>
             </div>
           </div>
         ))}
-      
-      
+        {(!userId || !linkDetails) && 
+        <div className='justify-content-center text-center d-block text-uppercase'>
+          <img src={SocialMedia} className="social-logo" alt="logo"></img>
+          <h1>Create your own profile link</h1>
+          <h3 style={{color: '#77B255'}}>Connect your all link in one place</h3>
+        </div>
+        }
+        <div style={{backgroundColor: '#e2eff7', width:'100%', bottom:'0'}}>
+          <center>Developed by @<a href="https://noorasfatima.netlify.app/">Nooras Fatima</a></center>
+          <center>Copyright © 2021 Nooras Fatima. All Rights Reserved.</center>
+        </div>  
     </div>
   );
 }

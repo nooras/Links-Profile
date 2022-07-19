@@ -1,8 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,23 +10,4 @@ code {
     monospace;
 }
 
-/* mysql -h 2s367gc1imgv.us-east-3.psdb.cloud -u pvxl23ngk4z2 -ppscale_pw_YO2pbJkrToGJ8gmjMWheFOa9oExcBQK1uqklC7-lRDk --ssl-mode=VERIFY_IDENTITY --ssl-ca=/etc/ssl/cert.pem < init.sql */
-
-
-/* database: link-profile
-username: pvxl23ngk4z2
-host: 2s367gc1imgv.us-east-3.psdb.cloud
-password: pscale_pw_YO2pbJkrToGJ8gmjMWheFOa9oExcBQK1uqklC7-lRDk
-
-insertLinks(
-    linkName: String!
-    link: String!
-    id: Int!
-  ): Link
-    @dbquery(
-      type: "mysql"
-      table: "links"
-      dml: INSERT
-      configuration: "mysql_config"
-    ) */
 
