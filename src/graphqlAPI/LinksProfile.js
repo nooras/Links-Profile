@@ -1,9 +1,9 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import React, { useState } from 'react';
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Input, TextareaAutosize } from '@material-ui/core';
+import { Button, Input } from '@material-ui/core';
 import { client } from '../utils/client'
 // import Logo from "./assets/img/foodies.gif"
 import { useParams } from 'react-router-dom'
@@ -307,6 +307,7 @@ function LinksProfile() {
 
   return (
     <div className=''>
+      {msg}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -414,8 +415,8 @@ function LinksProfile() {
                 <img src={logo} className="App-logo" width='200' alt="logo"></img>
               </div>
             {userId ? (
-              <div>
-                {/* <p>{email}</p> */}
+              <div className='d-flex'>
+                <p className='my-auto'>{username}</p>
                 <Button className="btn mx-2" onClick={() => setOpenAddLink(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>ADD LINK</Button>
                 <Button className="btn" onClick={() => signOut()} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>Logout</Button>
               </div>
@@ -441,22 +442,23 @@ function LinksProfile() {
               </div>
               <div className="d-flex card-body text-secondary justify-content-between">
                 <h4 className="card-text m-2">{linkDetails[key].link}</h4>
-                <Button className='button-all' onClick={() => setCopyText(linkDetails[key].link)}><img src="https://img.icons8.com/ios-glyphs/20/000000/copy.png"/></Button>
+                <Button className='button-all' onClick={() => setCopyText(linkDetails[key].link)}><img src="https://img.icons8.com/ios-glyphs/20/000000/copy.png" alt="img"/></Button>
               </div>
             </div>
           </div>
         ))}
         {(!userId || !linkDetails) && 
+        <>
         <div className='justify-content-center text-center d-block text-uppercase'>
           <img src={SocialMedia} className="social-logo" alt="logo"></img>
           <h1>Create your own profile link</h1>
           <h3 style={{color: '#77B255'}}>Connect your all link in one place</h3>
         </div>
-        }
         <div style={{backgroundColor: '#e2eff7', width:'100%', bottom:'0'}}>
           <center>Developed by @<a href="https://noorasfatima.netlify.app/">Nooras Fatima</a></center>
           <center>Copyright © 2021 Nooras Fatima. All Rights Reserved.</center>
-        </div>  
+        </div> </>
+        } 
     </div>
   );
 }
