@@ -4,16 +4,26 @@ import { client } from './utils/client';
 import { ApolloProvider } from "@apollo/react-hooks"
 import GetAllUsers from './graphqlAPI/GetAllUsers';
 import LinksProfile from './graphqlAPI/LinksProfile';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 const name = "noorasf"
 function App() {
   return (
     <div className="App">
+      <BrowserRouter>
       <ApolloProvider client={client}>
-        <LinksProfile name={name}/>
-        {/* <GetAllUsers /> */}
-        {/* <div>hello</div> */}
-      </ApolloProvider>
+
+      
+        <Routes>
+        <Route path="/" element={<LinksProfile/>}></Route>
+          <Route path="/:userUniqeName" element={<LinksProfile/>}>
+              {/* <LinksProfile name={name}/> */}
+              {/* <GetAllUsers /> */}
+              {/* <div>hello</div> */}
+          </Route>
+        </Routes>
+        </ApolloProvider>
+      </BrowserRouter>
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

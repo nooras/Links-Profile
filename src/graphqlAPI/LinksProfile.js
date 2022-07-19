@@ -1,3 +1,4 @@
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { gql, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
 import Modal from '@material-ui/core/Modal';
@@ -5,13 +6,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Input, TextareaAutosize } from '@material-ui/core';
 import { client } from '../utils/client'
 // import Logo from "./assets/img/foodies.gif"
+import { useParams } from 'react-router-dom'
+
 
 // var name = "nooras";
-const GET_QUERY = gql`
+const GET_USER = gql`
   query MyQuery($name: String!)   {
     getUsersByUserName(name: $name) {
       name
       password
+      userId
+      email
     }
   }
 `;
@@ -89,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function LinksProfile(name) {
+function LinksProfile() {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = useState(false);
@@ -103,6 +108,9 @@ function LinksProfile(name) {
   const [linkName, setLinkName] = useState('');
   const [link, setLink] = useState('');
   const [linkDetails, setLinkDetails] = useState('');
+  const {userUniqeName} = useParams();
+  const [msg, setMsg] = useState('');
+  const [copyText, setCopyText] = useState('');
     // console.log("hii", name["name"]);
 
   const signIn = async (event) => {
@@ -132,7 +140,7 @@ function LinksProfile(name) {
         setUserId(res[0].userId);
         console.log(res[0].email, res[0].userId);
         setOpenSignIn(false);
-        fetchLinkDetails();
+        fetchLinkDetails(res[0].userId);
     } else {
         setError("User Not Found")
         console.log("No")
@@ -196,14 +204,15 @@ function LinksProfile(name) {
       // <pre>{JSON.stringify(error, null, 2)}</pre>
     };
       
-    const res = data["insertUsers"];
+    console.log(data, "data");
+    const res = data["insertLinks"];
   
     console.log(res);
     if(res.id !== undefined){
         console.log("Link added...")
         // setEmail(res[0].email);
         // setId(res.);
-        fetchLinkDetails();
+        fetchLinkDetails(userId);
         console.log(res.id, res.link)
         setOpenAddLink(false);
     } else {
@@ -212,9 +221,9 @@ function LinksProfile(name) {
     }
   }
 
-  const fetchLinkDetails = async () => {
+  const fetchLinkDetails = async (userId) => {
     // event.preventDefault();
-    const userId = 1;
+    // const userId = 1;
     const { loading, error, data } = await client.query({
       query: GET_LINKS_BY_USERID, 
       variables: { userId: userId}
@@ -238,10 +247,62 @@ function LinksProfile(name) {
       console.log("Link not loaded...");
   }
   }
+
+  const fetchUserLinkDetails = async () => {
+    // event.preventDefault();
+    const { loading, error, data } = await client.query({
+      query: GET_USER, 
+      variables: { name: userUniqeName}
+    });
+
+    console.log(userUniqeName, "In fetchUserLinkDetails");
+
+    if (loading) (console.log("loading"));
   
+    if (error)  {
+      console.log(error);
+    };
+      
+    const res = data["getUsersByUserName"];
+    if(res[0] !== undefined){
+      console.log("Links loaded...", res[0].userId)
+      fetchLinkDetails(res[0].userId);
+      // console.log(res);
+  } else {
+      setMsg("No user details found for ", userUniqeName)
+      console.log("No user details found...");
+  }
+
+  }
+
+  if(userUniqeName){
+    console.log(userUniqeName, "loading link details");
+    fetchUserLinkDetails();
+  }
+
+  if(copyText){
+    navigator.clipboard.writeText(copyText);
+    setCopyText("");
+  }
+
+  const myFunction = (value) =>  {
+    console.log(value)
+    /* Get the text field */
+    // var copyText = document.getElementById("myInput");
+  
+    /* Select the text field */
+    // copyText.select();
+    // copyText.setSelectionRange(0, 99999); /* For mobile devices */
+  
+     /* Copy the text inside the text field */
+    navigator.clipboard.writeText(value);
+  
+    /* Alert the copied text */
+    // alert("Copied the text: " + value);
+  }
 
   return (
-    <div>
+    <div className=''>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -369,12 +430,7 @@ function LinksProfile(name) {
       {linkDetails && 
       <div>
         {/* {linkDetails[0].linkName} */}
-        {Object.keys(linkDetails).map((key) => (
-          <p key={key}>
-            {linkDetails[key].linkName}
-            {linkDetails[key].link}
-          </p>
-        ))}
+        
         {/* {
                   linkDetails.map((e, i) => {
                     <div>
@@ -384,6 +440,30 @@ function LinksProfile(name) {
                   })
         } */}
       </div>}
+      {userUniqeName}
+      {msg}
+      
+        {Object.keys(linkDetails).map((key) => (
+          // <p key={key}>
+          //   {linkDetails[key].linkName}
+          //   {linkDetails[key].link}
+          // </p>
+          <div className='d-flex justify-content-center m-2'>
+            <div className="linkdiv card border-secondary" key={key}>
+              <div className="card-header">
+                <h4>{linkDetails[key].linkName}</h4>
+              </div>
+              <div className="d-flex card-body text-secondary justify-content-between">
+                <h6 className="card-text my-2">{linkDetails[key].link}</h6>
+                <Button className='mx-2' onClick={() => setCopyText(linkDetails[key].link)} style={{border: '3px solid rgb(205, 213, 248)'}}>Copy text</Button>
+                {/* <button onClick={() => setCopyText(linkDetails[key].link)} value={linkDetails[key].link}>Copy text</button> */}
+                {/* <button onClick={() => this.myFunction(linkDetails[key].link)}>Copy text</button> */}
+                {/* <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
+              </div>
+            </div>
+          </div>
+        ))}
+      
       
     </div>
   );
