@@ -338,7 +338,7 @@ function LinksProfile() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button className="btn mx-2" type="submit" onClick={signUp} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7'}}>Sign In</Button>
+              <Button className="btn mx-2" type="submit" onClick={signUp} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7'}}>Sign Up</Button>
               {/* <Button className='mx-2' type="submit" onClick={signUp} style={{border: '3px solid rgb(205, 213, 248)'}}>Sign up</Button> */}
               <div>
                 {error && (<p>{error}</p>)}
