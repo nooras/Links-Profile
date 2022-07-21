@@ -430,7 +430,7 @@ function LinksProfile() {
       </div>
       {/* {msg} */}
       
-        {Object.keys(linkDetails).map((key) => (
+        {linkDetails ? (Object.keys(linkDetails).map((key) => (
           // <p key={key}>
           //   {linkDetails[key].linkName}
           //   {linkDetails[key].link}
@@ -446,19 +446,23 @@ function LinksProfile() {
               </div>
             </div>
           </div>
-        ))}
-        {(!userId || !linkDetails) && 
+        ))): (
+          <div>
+            <div className='justify-content-center text-center d-block text-uppercase'>
+              <img src={SocialMedia} className="social-logo" alt="logo"></img>
+              <h1>Create your own profile link</h1>
+              <h3 style={{color: '#77B255'}}>Connect your all link in one place</h3>
+            </div>
+            <div style={{backgroundColor: '#e2eff7', width:'100%', bottom:'0'}}>
+              <center>Developed by @<a href="https://noorasfatima.netlify.app/">Nooras Fatima</a></center>
+              <center>Copyright © 2021 Nooras Fatima. All Rights Reserved.</center>
+            </div>
+          </div>
+        )}
+        {/* {(!userId || !linkDetails) && 
         <>
-        <div className='justify-content-center text-center d-block text-uppercase'>
-          <img src={SocialMedia} className="social-logo" alt="logo"></img>
-          <h1>Create your own profile link</h1>
-          <h3 style={{color: '#77B255'}}>Connect your all link in one place</h3>
-        </div>
-        <div style={{backgroundColor: '#e2eff7', width:'100%', bottom:'0'}}>
-          <center>Developed by @<a href="https://noorasfatima.netlify.app/">Nooras Fatima</a></center>
-          <center>Copyright © 2021 Nooras Fatima. All Rights Reserved.</center>
-        </div> </>
-        } 
+         </>
+        }  */}
     </div>
   );
 }
