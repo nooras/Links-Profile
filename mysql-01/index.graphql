@@ -31,7 +31,6 @@ type Query {
       """
       configuration: "mysql_config"
     )
-
   getLinksByUserId(userId: Int!): [Links]
     @dbquery(
       type: "mysql"
@@ -58,7 +57,7 @@ type Mutation {
   """
   In this mutation example you can see how to do a mutation to insert data in the database.
   """
-  insertLinks(link: String!, linkName: String!, userId:  String!): Links
+  insertLinks(link: String!, linkName: String!, userId: String!): Links
     @dbquery(
       type: "mysql"
       table: "links"

@@ -24,3 +24,14 @@
 .social-logo{
     width: auto;
 }
+
+.linkUrl{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.linkUrl a{
+    text-decoration: none;
+    color: #76b154;
+}

@@ -10,10 +10,8 @@ import { useParams } from 'react-router-dom'
 import './link.css';
 import logo from './../assets/img/logo.gif';
 import SocialMedia from './../assets/img/SocialMedia.png'
+import { ReactSession } from 'react-client-session';
 
-
-
-// var name = "nooras";
 const GET_USER = gql`
   query MyQuery($name: String!)   {
     getUsersByUserName(name: $name) {
@@ -68,6 +66,8 @@ const GET_LINKS_BY_USERID = gql`
   }
 `;
 
+ReactSession.setStoreType("localStorage");
+
 function getModalStyle(){
   const top = 50;
   const left = 50;
@@ -90,14 +90,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
-
-// const signIn = async (event) =>{
-// }
-
-
-
-
 function LinksProfile() {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
@@ -115,13 +107,11 @@ function LinksProfile() {
   const {userUniqeName} = useParams();
   const [msg, setMsg] = useState('');
   const [copyText, setCopyText] = useState('');
-    // console.log("hii", name["name"]);
 
+  //Sign in
   const signIn = async (event) => {
     event.preventDefault();
     console.log("Signin")
-    // const n =  name["name"]
-    console.log(username, password)
     const { loading, error, data } = await client.query({
       query: GET_USERNAME_PASSWORD, 
       variables: { name: username, password: password}
@@ -132,25 +122,29 @@ function LinksProfile() {
     if (error)  {
       console.log(error);
       setError("Something went wrong");   
-      // <pre>{JSON.stringify(error, null, 2)}</pre>
     };
       
     const res = data["getUsersByUserNameAndPassword"];
   
     console.log(res);
     if(res[0] !== undefined){
-        console.log("YESS")
+        // if(!userUniqeName){
+        //   navigate(username);
+        // }
+        window.open("https://profilelinksnooras.netlify.app/"+res[0].name,"_self");
         setEmail(res[0].email);
         setUserId(res[0].userId);
-        console.log(res[0].email, res[0].userId);
+        // console.log(res[0].email, res[0].userId);
         setOpenSignIn(false);
         fetchLinkDetails(res[0].userId);
+        ReactSession.set('user', res[0]);
     } else {
         setError("User Not Found")
         console.log("No")
     }
   }
 
+  //Sign up
   const signUp = async (event) =>{
     event.preventDefault();
     console.log("signup")
@@ -164,35 +158,36 @@ function LinksProfile() {
     if (error)  {
       console.log(error);
       setError("Something went wrong...");   
-      // <pre>{JSON.stringify(error, null, 2)}</pre>
     };
       
     const res = data["insertUsers"];
   
     console.log(res);
     if(res.userId !== undefined){
-        console.log("YESS")
-        // setEmail(res[0].email);
+        window.open("https://profilelinksnooras.netlify.app/"+res.name,"_self");
         setUserId(res.userId);
-        console.log(res.email, res.userId)
+        // console.log(res.email, res.userId)
         setOpen(false);
+        ReactSession.set('user', res);
     } else {
         setError("Try again after sometimes. Signup fails.")
         console.log("No")
     }
   }
 
+  //Sign out
   const signOut = () => {
     localStorage.clear();
     window.location.reload();
   }
 
   // if(id){
-    console.log(userId);
+  // console.log(userId);
   // }
 
+  //Add link
   const addLink = async (event) =>{
-    event.preventDefault();
+    // event.preventDefault();
     console.log("addLink");
 
     const { loading, error, data } = await client.mutate({
@@ -205,7 +200,6 @@ function LinksProfile() {
     if (error)  {
       console.log(error);
       setError("Something went wrong...");   
-      // <pre>{JSON.stringify(error, null, 2)}</pre>
     };
       
     console.log(data, "data");
@@ -213,11 +207,10 @@ function LinksProfile() {
   
     console.log(res);
     if(res.id !== undefined){
-        console.log("Link added...")
-        // setEmail(res[0].email);
-        // setId(res.);
+        // console.log("Link added in link add...", userId);
+        //Fetch link details of user by id
         fetchLinkDetails(userId);
-        console.log(res.id, res.link)
+        // console.log(res.id, res.link)
         setOpenAddLink(false);
     } else {
         setError("Try again after sometimes. Add link fail.")
@@ -225,8 +218,8 @@ function LinksProfile() {
     }
   }
 
+  //fetch link details by id
   const fetchLinkDetails = async (userId) => {
-    // event.preventDefault();
     // const userId = 1;
     const { loading, error, data } = await client.query({
       query: GET_LINKS_BY_USERID, 
@@ -238,20 +231,20 @@ function LinksProfile() {
     if (error)  {
       console.log(error);
       setError("Something went wrong");   
-      // <pre>{JSON.stringify(error, null, 2)}</pre>
     };
       
     const res = data["getLinksByUserId"];
-    if(res[0].id !== undefined){
-      console.log("Links loaded...")
+    if(res[0] !== undefined && res[0].id !== undefined){
+      // console.log("Links loaded...")
       setLinkDetails(res);
-      console.log(res)
+      // console.log(res)
   } else {
-      setError("Link loading fail.")
+      setError("No Links found or Link loading fail.")
       console.log("Link not loaded...");
   }
   }
 
+  //fetch users deatils
   const fetchUserLinkDetails = async () => {
     // event.preventDefault();
     const { loading, error, data } = await client.query({
@@ -269,45 +262,44 @@ function LinksProfile() {
       
     const res = data["getUsersByUserName"];
     if(res[0] !== undefined){
-      console.log("Links loaded...", res[0].userId)
+      // console.log("Links loaded...", res[0].userId)
       fetchLinkDetails(res[0].userId);
       // console.log(res);
   } else {
-      setMsg("No user details found for ", userUniqeName)
-      console.log("No user details found...");
+      setMsg("No user details found for " + userUniqeName)
+      console.log("No user details found...", userUniqeName);
   }
 
   }
 
-  if(userUniqeName){
+  // if user login then fetch details  else if url have username
+  if(userId){
+    fetchLinkDetails(userId);
+  } else if(userUniqeName && !linkDetails ){
     console.log(userUniqeName, "loading link details");
     fetchUserLinkDetails();
   }
 
+  //Copy text
   if(copyText){
     navigator.clipboard.writeText(copyText);
     setCopyText("");
   }
 
-  // const myFunction = (value) =>  {
-  //   console.log(value)
-    /* Get the text field */
-    // var copyText = document.getElementById("myInput");
-  
-    /* Select the text field */
-    // copyText.select();
-    // copyText.setSelectionRange(0, 99999); /* For mobile devices */
-  
-     /* Copy the text inside the text field */
-    // navigator.clipboard.writeText(value);
-  
-    /* Alert the copied text */
-    // alert("Copied the text: " + value);
-  // }
+  // if session present
+  if(ReactSession.get('user') !== undefined && Object.keys(ReactSession.get('user')).length !== 0 && !userId){
+    const res = ReactSession.get('user');
+    setUserId(res.userId);
+    setEmail(res.email);
+    setUsername(res.name);
+  }
 
+  // if(!userUniqeName && username){
+  //   navigate(username);
+  // }
+  
   return (
     <div className=''>
-      {msg}
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -415,33 +407,40 @@ function LinksProfile() {
                 <img src={logo} className="App-logo" width='200' alt="logo"></img>
               </div>
             {userId ? (
-              <div className='d-flex'>
-                <p className='my-auto'>{username}</p>
+              <div className='d-flex m-2'>
+                <p className='my-auto'>USERNAME: {username}</p>
                 <Button className="btn mx-2" onClick={() => setOpenAddLink(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>ADD LINK</Button>
                 <Button className="btn" onClick={() => signOut()} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>Logout</Button>
               </div>
               ):(
-              <div>
+              <div className='d-flex m-2'>
                 {/* <p>{email} {userId}</p> */}
                 <Button className="btn mx-2" onClick={() => setOpenSignIn(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}}>Sign In</Button>
                 <Button className="btn" onClick={() => setOpen(true)} style={{border: '#0097EF solid 1px', backgroundColor: '#e2eff7', fontSize: 18}} >Sign Up</Button>
               </div>
             )}    
       </div>
-      {/* {msg} */}
+      {msg && 
+      <div className='d-flex justify-content-center m-2'>
+        {msg}
+      </div>}
       
         {linkDetails ? (Object.keys(linkDetails).map((key) => (
           // <p key={key}>
           //   {linkDetails[key].linkName}
           //   {linkDetails[key].link}
           // </p>
-          <div className='d-flex justify-content-center m-2'>
-            <div className="linkdiv card" key={key}>
+          <div className='d-flex justify-content-center m-2' key={key}>
+            <div className="linkdiv card">
               <div className="card-header text-uppercase">
                 <h4 className='m-2'>{linkDetails[key].linkName}</h4>
               </div>
               <div className="d-flex card-body text-secondary justify-content-between">
-                <h4 className="card-text m-2">{linkDetails[key].link}</h4>
+                <h4 className="linkUrl card-text m-2">
+                  <a href={linkDetails[key].link}>
+                  {linkDetails[key].link}
+                  </a>
+                </h4>
                 <Button className='button-all' onClick={() => setCopyText(linkDetails[key].link)}><img src="https://img.icons8.com/ios-glyphs/20/000000/copy.png" alt="img"/></Button>
               </div>
             </div>
