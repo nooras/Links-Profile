@@ -453,7 +453,7 @@ function LinksProfile() {
               </div>
               <div className="d-flex card-body text-secondary justify-content-between">
                 <h4 className="linkUrl card-text m-2">
-                  <a href={linkDetails[key].link} target="_blank">
+                  <a href={linkDetails[key].link} target="_blank" rel="noopener noreferrer">
                   {linkDetails[key].link}
                   </a>
                 </h4>
