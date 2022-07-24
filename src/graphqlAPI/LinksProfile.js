@@ -472,7 +472,7 @@ function LinksProfile() {
         )}
         <div style={{backgroundColor: '#e2eff7', width:'100%', bottom:'0'}}>
               <center>Developed by @<a href="https://noorasfatima.netlify.app/">Nooras Fatima</a></center>
-              <center>Copyright © 2021 Nooras Fatima. All Rights Reserved.</center>
+              <center>Copyright © 2022 Nooras Fatima. All Rights Reserved.</center>
         </div>
     </div>
   );
