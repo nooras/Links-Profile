@@ -137,7 +137,7 @@ function LinksProfile() {
         // console.log(res[0].email, res[0].userId);
         setOpenSignIn(false);
         fetchLinkDetails(res[0].userId);
-        ReactSession.set('user', res[0]);
+        ReactSession.set('ProfileUser', res[0]);
     } else {
         setError("User Not Found")
         console.log("No")
@@ -168,7 +168,7 @@ function LinksProfile() {
         setUserId(res.userId);
         // console.log(res.email, res.userId)
         setOpen(false);
-        ReactSession.set('user', res);
+        ReactSession.set('ProfileUser', res);
     } else {
         setError("Try again after sometimes. Signup fails.")
         console.log("No")
@@ -275,7 +275,7 @@ function LinksProfile() {
   // if user login then fetch details  else if url have username
   if(userId){
     fetchLinkDetails(userId);
-  } else if(userUniqeName && !linkDetails ){
+  } else if(userUniqeName && !linkDetails){
     console.log(userUniqeName, "loading link details");
     fetchUserLinkDetails();
   }
@@ -287,8 +287,10 @@ function LinksProfile() {
   }
 
   // if session present
-  if(ReactSession.get('user') !== undefined && Object.keys(ReactSession.get('user')).length !== 0 && !userId){
-    const res = ReactSession.get('user');
+  // console.log(ReactSession.get('ProfileUser'), userId)
+  if(ReactSession.get('ProfileUser') !== undefined && Object.keys(ReactSession.get('ProfileUser')).length !== 0 && (userId === undefined || userId === "")){
+    const res = ReactSession.get('ProfileUser');
+    // console.log("in Ifff", res)
     setUserId(res.userId);
     setEmail(res.email);
     setUsername(res.name);
