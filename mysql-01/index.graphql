@@ -74,4 +74,12 @@ type Mutation {
       dml: DELETE
       configuration: "mysql_config"
     )
+  
+  deleteLinksById(id: Int!): Links
+    @dbquery(
+      type: "mysql"
+      table: "links"
+      dml: DELETE
+      configuration: "mysql_config"
+    )
 }

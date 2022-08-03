@@ -67,6 +67,17 @@ const GET_LINKS_BY_USERID = gql`
   }
 `;
 
+const DELETE_LINKS_BY_ID = gql`
+  mutation MyMutation($id: Int!) {
+    deleteLinksById(id: $id) {
+      id
+      link
+      linkName
+      userId
+    }
+  }
+`;
+
 ReactSession.setStoreType("localStorage");
 
 function getModalStyle(){
@@ -108,6 +119,7 @@ function LinksProfile() {
   const {userUniqeName} = useParams();
   const [msg, setMsg] = useState('');
   const [copyText, setCopyText] = useState('');
+  const [deleteLinkId, setDeleteLinkId] = useState('');
 
   //Sign in
   const signIn = async (event) => {
@@ -135,6 +147,7 @@ function LinksProfile() {
             //   navigate(username);
             // }
             window.open("https://profilelinksnooras.netlify.app/"+res[0].name,"_self");
+            // window.open("http://localhost:3000/"+res[0].name,"_self");
             setEmail(res[0].email);
             setUserId(res[0].userId);
             // console.log(res[0].email, res[0].userId);
@@ -309,6 +322,27 @@ function LinksProfile() {
     setEmail(res.email);
     setUsername(res.name);
   }
+
+  // delete link by id
+  if(deleteLinkId){
+    const { loading, error, data } = client.mutate({
+      mutation: DELETE_LINKS_BY_ID, 
+      variables: { id: deleteLinkId}
+    });
+
+    if (loading) (console.log("loading"));
+  
+    if (error)  {
+      console.log(error);
+      setError("Something went wrong...");   
+    };
+    console.log(data);
+    window.open("https://profilelinksnooras.netlify.app/"+username,"_self");
+    // window.open("http://localhost:3000/"+username,"_self");
+    fetchLinkDetails(userId);
+    setError("");
+    setDeleteLinkId("");
+  }
   
   return (
     <div className=''>
@@ -448,8 +482,9 @@ function LinksProfile() {
           // </p>
           <div className='d-flex justify-content-center m-2' key={key}>
             <div className="linkdiv card">
-              <div className="card-header text-uppercase">
+              <div className="d-flex card-header text-uppercase justify-content-between">
                 <h4 className='m-2'>{linkDetails[key].linkName}</h4>
+                {(userId && userId === linkDetails[key].userId) && <Button className='button-all' onClick={() => setDeleteLinkId(linkDetails[key].id)}><img src="https://img.icons8.com/ios-glyphs/20/ff0000/delete.png" alt="img"/></Button>}
               </div>
               <div className="d-flex card-body text-secondary justify-content-between">
                 <h4 className="linkUrl card-text m-2">
